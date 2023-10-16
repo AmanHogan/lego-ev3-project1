@@ -63,7 +63,7 @@ def print_commands(commands):
 def print_2d_matrix(matrix):
     print("-----------------------")
     for row in matrix:
-        formatted_row = ["{:.2f}".format(value) for value in row]
+        formatted_row = ["{:.4f}".format(value) for value in row]
         print(" ".join(formatted_row))
     print("-----------------------")
 

@@ -6,7 +6,7 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.media.ev3dev import SoundFile, ImageFile
 from robotics import Robot, Navigator
 import micro_numpy as np
-import matricies as mx
+import kinematics as kn
 
 # Initialize the EV3 Brick.
 ev3 = EV3Brick()
@@ -24,9 +24,5 @@ robot = Robot(Motor(Port.A, positive_direction=Direction.COUNTERCLOCKWISE), Moto
 
 # Get executable commands from Transformations
 # Execute commands
-commands = mx.transformation_to_commands(transformations)
+commands = kn.transformation_to_commands(transformations)
 robot.execute_commands(commands)
-
-
-
-

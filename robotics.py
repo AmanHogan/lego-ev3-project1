@@ -3,7 +3,7 @@ from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor, InfraredSensor
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 import math
-import matricies as mx
+import matricies as kn
 import micro_numpy as np
 
 class Robot:
@@ -44,37 +44,39 @@ class Robot:
     
 
 class Navigator:
-    
-
     def __init__(self, obstacles, transformations):
         self.obstacles = obstacles
         self.transformations = transformations
         self.current_matrix = None
         self.list_of_matricies = []
         self.action_count = 0
+        self.current_x = 0
+        self.current_y = 0
 
 
     def update_matrix(self):
+
+        #print(self.transformations)
+
         if self.action_count == 0:
-            print(self.transformations)
-            self.current_matrix = mx.create_trans_matrix([self.transformations.pop(0)])
-            self.list_of_matricies.append(self.current_matrix )
-            print("Matrix:", "(", self.action_count, ")")
-            mx.print_2d_matrix(self.current_matrix)
+            self.current_matrix = kn.create_trans_matrix([self.transformations.pop(0)])
 
         else:
-            print(self.transformations)
-            self.current_matrix = np.dot(self.current_matrix, mx.create_trans_matrix([self.transformations.pop(0)]))
-            self.list_of_matricies.append(self.current_matrix )
-            print("Matrix:", "(", self.action_count, ")")
-            mx.print_2d_matrix(self.current_matrix)
-    
-        self.action_count +=1
+            self.current_matrix = np.dot(self.current_matrix, kn.create_trans_matrix([self.transformations.pop(0)]))
+
+        self.list_of_matricies.append(self.current_matrix )
+        print("Matrix:", "(", self.action_count, ")")
+        kn.print_2d_matrix(self.current_matrix)
+        result_x = self.current_matrix[0][2]  # The first number in the last column
+        result_y = self.current_matrix[1][2]  # The second number in the last column
+        result_orientation = kn.get_orientation(self.current_matrix)
+
         if len(self.transformations) == 0:
-            result_x = self.current_matrix[0][2]  # The first number in the last column
-            result_y = self.current_matrix[1][2]  # The second number in the last column
-            result_orientation = mx.get_orientation(self.current_matrix)
-            print("Final Position (x, y):", result_x, result_y)
+            print("Final Position (x, y):", result_x,"," ,result_y)
             print("Final Orientation (degrees):", result_orientation)
 
+        else:
+            print("Position (x, y):", result_x, "," , result_y)
+            print("Orientation (degrees):", result_orientation)
 
+        self.action_count +=1
