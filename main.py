@@ -17,8 +17,7 @@ transformations = [('T', 1000, 0), ('R', 90), ('T', 0, 1000), ('R', 90)]
 
 print("List of Transformations", transformations)
 print("-----------------------")
-print("Result Matrix of Transforamtions:")
-mx.print_2d_matrix(mx.create_trans_matrix(transformations))
+
 
 navigator = Navigator(obstacles, transformations)
 robot = Robot(Motor(Port.A, positive_direction=Direction.COUNTERCLOCKWISE), Motor(Port.D, positive_direction=Direction.COUNTERCLOCKWISE), navigator)
