@@ -1,6 +1,14 @@
 import math
 import micro_numpy as np
 
+##################################################
+# kinematics : Performs more complex 
+# matrix operations related to kinematics 
+# and converts transforms -> commands
+# and transforms -> matricies
+# 10/17/2023
+##################################################
+
 def transforms_to_matrix(transformations)-> list[list[float]]:
     """Converts a list of transforms of format (EX format: [('T', 1000, 0), ('R', 90))
     into a rotation or translation matrix. Then multiplies the set of matricies to get a result.
@@ -103,7 +111,6 @@ def print_matrix(matrix) -> None:
         formatted_row = ["{:.4f}".format(value) for value in row]
         print(" ".join(formatted_row))
     print("------------------------")
-
 
 # Example usage
 if __name__ == "__main__":
