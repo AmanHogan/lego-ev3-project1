@@ -1,8 +1,8 @@
-import micro_numpy as np
 import math
+import micro_numpy as np
 
-def create_trans_matrix(transformations):
-    result = np.eye(3)  # Initialize with the identity matrix
+def create_trans_matrix(transformations)-> list[list[float]]:
+    result = np.eye(3)
 
     for transformation in transformations:
         if transformation[0] == 'T':
@@ -31,7 +31,7 @@ def get_orientation(matrix):
     
     return angle_deg
 
-def transformation_to_commands(transformations):
+def transformation_to_commands(transformations) -> list[tuple[str, int]]:
     result = np.eye(3)  # Initialize with the identity matrix
     for transformation in transformations:
         if transformation[0] == 'T':
@@ -56,11 +56,22 @@ def transformation_to_commands(transformations):
             commands.append(("turn", current_angle))
     return commands
 
-def print_commands(commands):
+def print_commands(commands: list[tuple[str, int]]) -> None:
+    """Takes a list of commands that are used to drive the robot,
+    and prints them out.
+
+    Args:
+        commands (List[Tuple[str, int]]): list of commands
+    """
     for command in commands:
         print(command)
 
-def print_2d_matrix(matrix):
+def print_matrix(matrix: list[list[float]]) -> None:
+    """Prints a given 2D matrix
+
+    Args:
+        matrix (List[List[int]]): 2D matrix
+    """
     print("-----------------------")
     for row in matrix:
         formatted_row = ["{:.4f}".format(value) for value in row]

@@ -3,7 +3,7 @@ from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor, InfraredSensor
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 import math
-import matricies as kn
+import kinematics as kn
 import micro_numpy as np
 
 class Robot:
@@ -16,11 +16,12 @@ class Robot:
     M_PI = 3.14159265359 
 
     def __init__(self, left_motor, right_motor, navigator):
-        self.left_motor = left_motor
+        self.left_motor = left_motor # Type Motor
         self.right_motor = right_motor
         self.navigator = navigator
     
     def move(self, distance):
+
         self.navigator.update_matrix()
         angle =  (distance / Robot.TIRE_CIRC) * Robot.FULL_ROTATION
         self.left_motor. run_angle(Robot.RPM, angle, wait=False)
@@ -44,14 +45,14 @@ class Robot:
     
 
 class Navigator:
-    def __init__(self, obstacles, transformations):
-        self.obstacles = obstacles
+    def __init__(self, transformations):
         self.transformations = transformations
         self.current_matrix = None
         self.list_of_matricies = []
         self.action_count = 0
         self.current_x = 0
         self.current_y = 0
+        print(self.transformations)
 
 
     def update_matrix(self):
@@ -66,7 +67,7 @@ class Navigator:
 
         self.list_of_matricies.append(self.current_matrix )
         print("Matrix:", "(", self.action_count, ")")
-        kn.print_2d_matrix(self.current_matrix)
+        kn.print_matrix(self.current_matrix)
         result_x = self.current_matrix[0][2]  # The first number in the last column
         result_y = self.current_matrix[1][2]  # The second number in the last column
         result_orientation = kn.get_orientation(self.current_matrix)

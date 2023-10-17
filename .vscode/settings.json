@@ -2,6 +2,9 @@
 {
 	"files.eol": "\n",
 	"debug.openDebug": "neverOpen",
-	"python.linting.enabled": false,
-	"python.languageServer": "Pylance"
+	"python.linting.enabled": true,
+	"python.languageServer": "Pylance",
+	"python.analysis.typeCheckingMode": "basic",
+	"python.analysis.autoImportCompletions": false,
+
 }

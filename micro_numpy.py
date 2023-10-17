@@ -14,8 +14,17 @@ def transformation_matrix(dx, dy, theta_deg):
     rotation = rotation_matrix(theta_deg)
     return dot(translation, rotation)
 
-def dot(a, b):
-    result = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+def dot(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
+    """Multiplies (dot products) two matricies and returns result
+
+    Args:
+        a (list[list[float]]): 2D Matrix
+        b (list[list[float]]): 2D Matrix
+
+    Returns:
+        list[list[float]]: Product of two matricies
+    """
+    result = [[0.0000, 0.0000, 0.0000], [0.0000, 0.0000, 0.0000], [0.0000, 0.0000, 0.0000]]
     for i in range(3):
         for j in range(3):
             for k in range(3):
@@ -29,7 +38,7 @@ def array(data):
         raise ValueError("Input must be a list")
 
 def eye(n):
-    result = [[1 if i == j else 0 for i in range(n)] for j in range(n)]
+    result = [[1.0000 if i == j else 0.0000 for i in range(n)] for j in range(n)]
     return result
 
 def arctan2(y, x):
