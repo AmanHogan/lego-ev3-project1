@@ -1,7 +1,7 @@
 import math
 import micro_numpy as np
 
-def create_trans_matrix(transformations)-> list[list[float]]:
+def transforms_to_matrix(transformations)-> list[list[float]]:
     result = np.eye(3)
 
     for transformation in transformations:
@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
     commands = transformation_to_commands(transformations)
 
-    result_matrix = create_trans_matrix(transformations)
+    result_matrix = transforms_to_matrix(transformations)
     result_x = result_matrix[0][2]  # The first number in the last column
     result_y = result_matrix[1][2]  # The second number in the last column
     result_orientation = get_orientation(result_matrix)
