@@ -6,6 +6,13 @@ import math
 import kinematics as kn
 import micro_numpy as np
 
+##################################################
+# robotuic : Acts as a replacement 
+# for pybricks.robotics module. Contains classes 
+# for movement and navigation
+# 10/17/2023
+##################################################
+
 ######################################### Navigation class ############################################
 
 class Navigator:
@@ -13,7 +20,7 @@ class Navigator:
     Uses transformation matricies to keep track of orientation and position
     """
 
-    def __init__(self, transforms: list[tuple[str, float]] | list[tuple[str, float]]):
+    def __init__(self, transforms):
 
         # TODO: Create a variable that takes in the origin of the robot
         # and sets x, y, and orientation equal to that value
@@ -76,7 +83,7 @@ class Robot:
         self.right_motor = right_motor # controls right tire
         self.navigator = navigator # object to keep track of robot position
     
-    def move(self, distance:float) -> None:
+    def move(self, distance) -> None:
         """Moves robot a given distance in [mm]
 
         Args:
@@ -92,7 +99,7 @@ class Robot:
         self.left_motor. run_angle(Robot.RPM, angle, wait=False)
         self.right_motor.run_angle(Robot.RPM, angle)
     
-    def turn(self, angle: float) -> None:
+    def turn(self, angle) -> None:
         """Turns robot a given angle [deg]
 
         Args:
@@ -109,7 +116,7 @@ class Robot:
         self.left_motor. run_angle(Robot.RPM, -new_angle, wait=False)
         self.right_motor.run_angle(Robot.RPM, new_angle)
     
-    def execute_commands(self, robot_commands: list[tuple[str, float]]) -> None:
+    def execute_commands(self, robot_commands) -> None:
         """ Takes a list of commands in format ('move', <float>) or ('turn', <float>)
         Then executes these commands one-by-one
 
