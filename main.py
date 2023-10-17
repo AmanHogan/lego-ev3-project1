@@ -8,7 +8,7 @@ from robotics import Robot, Navigator
 import micro_numpy as np
 import kinematics as kn
 import math
-# import a_star_copy as star
+import path_planner as pl
 
 # Initialize the EV3 Brick.
 ev3 = EV3Brick()
@@ -26,7 +26,7 @@ robot = Robot(Motor(Port.A, positive_direction=Direction.COUNTERCLOCKWISE), Moto
 # Get executable commands from Transformations
 # Execute commands
 
-
+pl.main()
 commands = kn.transformation_to_commands(transformations)
 robot.execute_commands(commands)
 

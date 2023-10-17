@@ -1,11 +1,17 @@
 
 
 import math
+import micro_numpy as np
 
+ON_DESKTOP = False
 
+try:
+    import matplotlib.pyplot as plt
+    ON_DESKTOP = True
+except ImportError:
+    pass
 
-
-class AStarPlanner:
+class PathPlanner:
 
     def __init__(self, ox, oy, resolution, rr):
         """
@@ -72,6 +78,21 @@ class AStarPlanner:
                                                                          o]))
             current = open_set[c_id]
 
+            # show graph
+            if ON_DESKTOP:  # pragma: no cover
+
+                try:
+                    plt.plot(self.calc_grid_position(current.x, self.min_x),
+                            self.calc_grid_position(current.y, self.min_y), "xc")
+                    # for stopping simulation with the esc key.
+                    plt.gcf().canvas.mpl_connect('key_release_event',
+                                                lambda event: [exit(
+                                                    0) if event.key == 'escape' else None])
+                    if len(closed_set.keys()) % 10 == 0:
+                        plt.pause(0.001)
+                except ImportError:
+                    pass
+
 
             if current.x == goal_node.x and current.y == goal_node.y:
                 print("Find goal")
@@ -127,7 +148,7 @@ class AStarPlanner:
     @staticmethod
     def calc_heuristic(n1, n2):
         w = 1.0  # weight of heuristic
-        d = w * math.hypot(n1.x - n2.x, n1.y - n2.y)
+        d = w * np.hypot(n1.x - n2.x, n1.y - n2.y)
         return d
 
     def calc_grid_position(self, index, min_position):
@@ -190,7 +211,7 @@ class AStarPlanner:
             for iy in range(self.y_width):
                 y = self.calc_grid_position(iy, self.min_y)
                 for iox, ioy in zip(ox, oy):
-                    d = math.hypot(iox - x, ioy - y)
+                    d = np.hypot(iox - x, ioy - y)
                     if d <= self.rr:
                         self.obstacle_map[ix][iy] = True
                         break
@@ -226,7 +247,7 @@ def get_final_path(rx, ry):
   return final_path
 
 def draw_obstacle(ox, oy, x, y):
-    r = .305/2
+    r = .30500/2.0000
     ox.append(x-r)
     oy.append(y-r)
     ox.append(x-r)
@@ -254,9 +275,9 @@ def main():
     # start and goal position
     sx = .0001  # [m]
     sy = .0001  # [m]
-    gx = 3.05  # [m]
-    gy = 4.88  # [m]
-    grid_size = .1  # [m]
+    gx = 3.0500  # [m]
+    gy = 4.8800  # [m]
+    grid_size = .3000  # [m]
     robot_radius = .075  # [m]
 
     # set obstacle positions
@@ -282,14 +303,22 @@ def main():
     draw_obstacle(ox,oy, px, py)
 
 
-    
+    if ON_DESKTOP:  # pragma: no cover
+        try:
+            plt.plot(ox, oy, ".k")
+            plt.plot(sx, sy, "og")
+            plt.plot(gx, gy, "xb")
+            plt.grid(True)
+            plt.axis("equal")
+        except ImportError:
+            pass
+      
 
-
-    a_star = AStarPlanner(ox, oy, grid_size, robot_radius)
+    a_star = PathPlanner(ox, oy, grid_size, robot_radius)
     rx, ry = a_star.planning(sx, sy, gx, gy)
 
     # Goal to Start
-    final_path = get_final_path(rx,ry)
+    final_path = get_final_path(list(reversed(rx)),list(reversed(ry)))
     print(final_path)
     
 
