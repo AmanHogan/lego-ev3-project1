@@ -1,20 +1,6 @@
 import math
 
-def translation_matrix(dx, dy):
-    return [[1, 0, dx], [0, 1, dy], [0, 0, 1]]
-
-def rotation_matrix(theta_deg):
-    theta_rad = math.radians(theta_deg)
-    cos_theta = math.cos(theta_rad)
-    sin_theta = math.sin(theta_rad)
-    return [[cos_theta, -sin_theta, 0], [sin_theta, cos_theta, 0], [0, 0, 1]]
-
-def transformation_matrix(dx, dy, theta_deg):
-    translation = translation_matrix(dx, dy)
-    rotation = rotation_matrix(theta_deg)
-    return dot(translation, rotation)
-
-def dot(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
+def dot(a, b) -> list[list[float]]:
     """Multiplies (dot products) two matricies and returns result
 
     Args:
