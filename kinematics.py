@@ -1,4 +1,5 @@
 import math
+from globals import *
 import micro_numpy as np
 
 ##################################################
@@ -83,8 +84,7 @@ def transformation_to_commands(transformations) -> list[tuple[str, int]]:
             commands.append(("move", distance))
 
         elif transformation[0] == 'R':
-            angle_deg = transformation[1]
-            current_angle += angle_deg
+            current_angle = transformation[1]
             commands.append(("turn", current_angle))
 
     return commands
@@ -111,6 +111,7 @@ def print_matrix(matrix) -> None:
         formatted_row = ["{:.4f}".format(value) for value in row]
         print(" ".join(formatted_row))
     print("------------------------")
+
 
 # Example usage
 if __name__ == "__main__":

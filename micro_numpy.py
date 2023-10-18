@@ -1,4 +1,5 @@
 import math
+from globals import *
 
 ##################################################
 # micro_numpy : Acts as a replacement 

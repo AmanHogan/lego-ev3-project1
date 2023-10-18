@@ -1,0 +1,23 @@
+
+
+
+TIRE_CIRCUMFERENCE = 178 # Circumference of the tire in [mm]
+FULL_ROTATION = 360 
+TIRE_RPM = 400 # Revolutions per minute [r/min]
+ROBOT_LENGTH = 105 # Length of the robot in [mm]
+DIST_BTWN_WHEELS = 174.0000 # Distance between the wheels in [mm]
+ROBOT_RADIUS_MM = (DIST_BTWN_WHEELS/2.0000) # Radius of robot tire axel [mm]
+M_PI = 3.14159265359 
+
+START_POSITION = [0.001, 0.001]
+GOAL_POSITION = [2,2]
+GRID_SIZE = .3000
+NUMBER_OF_OBS = 1
+OBS_POSITIONS = [[1, 1]]
+ROBOT_RADIUS_M = ROBOT_RADIUS_MM/1000
+
+OBSTACLE_DIAMETER = .30500
+OBSTACLE_RADIUS = .30500/2.0000
+
+WORKSPACE_X_MAX = 5
+WORKSPACE_Y_MAX = 6

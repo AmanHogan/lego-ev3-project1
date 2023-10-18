@@ -1,164 +1,201 @@
 
 
 import math
+from globals import *
 import micro_numpy as np
+
+########################################################################################
+# NOTE: Authors note
+#   The matplotlib portion of this code was derived from several CS students at Cornel:
+#       Atsushi Sakai, Daniel Ingram, et.al..
+#
+#   I modified their A* matplotlib implementation by allowing the user to:
+#       Draw custom obstacles, Retrieve the path found, Run the program on the lego ev3
+#       Use global customized variables, Made it so that it showed percentage complete when
+#       calculating map, and Resolved their obstacle logic to avoid user error.
+#       
+#       And lastly, I modified their A* search using mine that I made in an AI class:
+#       github.com/AmanHogan/AI_StateSpaceSearches/blob/main/StateSpaceSearches/a_star.py
+#
+#   Support the Original Authors at: https://github.com/sponsors/AtsushiSakai
+#
+#########################################################################################
 
 ON_DESKTOP = False
 
+# If running program on desktop import the matplot libraries
 try:
     import matplotlib.pyplot as plt
     ON_DESKTOP = True
 except ImportError:
     pass
 
+################################ Node Class #################################################
+
+class Node:
+    """Node structure that keeps track of the path traveled
+    """
+    def __init__(self, x, y, cost, parent_index) -> None:
+        self.x = x  # index of the grid
+        self.y = y  # index of the grid
+        self.cost = cost # heuristic cost of traveling
+        self.parent_index = parent_index # parent of the current node
+
+########################### Path Planner Class ###############################################
+
 class PathPlanner:
-
+    """Responsible for path planning and path finding. Uses a* search for finding the path.
+    """
     def __init__(self, ox, oy, resolution, rr):
-        """
-        Initialize grid map for a star planning
+        """Initialize grid map for a star planning
 
-        ox: x position list of Obstacles [m]
-        oy: y position list of Obstacles [m]
-        resolution: grid resolution [m]
-        rr: robot radius[m]
+        Args:
+            ox (list[float]): x position list of Obstacles [m]
+            oy (list[float]): y position list of Obstacles [m]
+            resolution (float): size of the grid boxes used [m]
+            rr (float): radius of the robot [m]
         """
 
-        self.resolution = resolution
-        self.rr = rr
-        self.min_x, self.min_y = -20, 0
-        self.max_x, self.max_y = 0, 0
+        self.resolution = resolution # size of the grid boxes used
+        self.rr = rr # radius of the robot [m]
+        self.min_x, self.min_y = 0, 0 # Constraint of x position
+        self.max_x, self.max_y = 0, 0 # Constraint of y position
         self.obstacle_map = None
         self.x_width, self.y_width = 0, 0
         self.motion = self.get_motion_model()
         self.calc_obstacle_map(ox, oy)
 
-    class Node:
-        def __init__(self, x, y, cost, parent_index):
-            self.x = x  # index of grid
-            self.y = y  # index of grid
-            self.cost = cost
-            self.parent_index = parent_index
-
-        def __str__(self):
-            return str(self.x) + "," + str(self.y) + "," + str(
-                self.cost) + "," + str(self.parent_index)
-
     def planning(self, sx, sy, gx, gy):
+        """Implements path planning and finds the path from the start to goal
+        while also avoid the obstacles.
+
+        Args:
+            sx (float): start x position [m]
+            sy (float): start y position [m]
+            gx (float): goal x position [m]
+            gy (float): goal y position [m]
+
+        Returns:
+            rx (list[float]): x position list of the final path,
+            ry (list[float]): y position list of the final path
         """
-        A star path search
 
-        input:
-            s_x: start x position [m]
-            s_y: start y position [m]
-            gx: goal x position [m]
-            gy: goal y position [m]
+        # Get initial state - node, and keep track of max fringe size
+        start_node = Node(self.calc_xy_index(sx, self.min_x), self.calc_xy_index(sy, self.min_y), 0.0, -1)
+        goal_node = Node(self.calc_xy_index(gx, self.min_x), self.calc_xy_index(gy, self.min_y), 0.0, -1)
 
-        output:
-            rx: x position list of the final path
-            ry: y position list of the final path
-        """
+        # Queue to keep track of nodes and visited nodes
+        fringe, visited_set = dict(), dict()
+        fringe[self.calc_grid_index(start_node)] = start_node
 
-        start_node = self.Node(self.calc_xy_index(sx, self.min_x),
-                               self.calc_xy_index(sy, self.min_y), 0.0, -1)
-        goal_node = self.Node(self.calc_xy_index(gx, self.min_x),
-                              self.calc_xy_index(gy, self.min_y), 0.0, -1)
-
-        open_set, closed_set = dict(), dict()
-        open_set[self.calc_grid_index(start_node)] = start_node
-
+        # While the queue is not empty ...
         while True:
-            if len(open_set) == 0:
-                print("Open set is empty..")
+
+            # No goal state found or fringe is empty
+            if len(fringe) == 0:
+                print("No solution or fringe was empty")
                 break
+            
+            # Sort the fringe based on Heuristic
+            c_id = min(fringe, key=lambda o: fringe[o].cost + self.calc_heuristic(goal_node, fringe[o]))
+        
+            current = fringe[c_id]
 
-            c_id = min(
-                open_set,
-                key=lambda o: open_set[o].cost + self.calc_heuristic(goal_node,
-                                                                     open_set[
-                                                                         o]))
-            current = open_set[c_id]
-
-            # show graph
-            if ON_DESKTOP:  # pragma: no cover
+            # If the program is being compiled on desktop, show graph
+            if ON_DESKTOP:
 
                 try:
-                    plt.plot(self.calc_grid_position(current.x, self.min_x),
-                            self.calc_grid_position(current.y, self.min_y), "xc")
+                    plt.plot(self.calc_grid_position(current.x, self.min_x), self.calc_grid_position(current.y, self.min_y), "xc")
+                    
                     # for stopping simulation with the esc key.
-                    plt.gcf().canvas.mpl_connect('key_release_event',
-                                                lambda event: [exit(
-                                                    0) if event.key == 'escape' else None])
-                    if len(closed_set.keys()) % 10 == 0:
+                    plt.gcf().canvas.mpl_connect('key_release_event', lambda event: [exit(0) if event.key == 'escape' else None])
+                    if len(visited_set.keys()) % 10 == 0:
                         plt.pause(0.001)
+
                 except ImportError:
                     pass
 
-
+            # If current state matches the goal state
+            # Break and find which path reached that goal state
             if current.x == goal_node.x and current.y == goal_node.y:
-                print("Find goal")
+                print("Goal was reached; Finding the path that found the goal")
+                print("-----------------------")
                 goal_node.parent_index = current.parent_index
                 goal_node.cost = current.cost
                 break
 
-            # Remove the item from the open set
-            del open_set[c_id]
+            # Pop node from queue
+            del fringe[c_id]
 
-            # Add it to the closed set
-            closed_set[c_id] = current
+            # Add popped node to visited
+            visited_set[c_id] = current
 
-            # expand_grid search grid based on motion model
+            # Expand_grid search grid based on motion model
             for i, _ in enumerate(self.motion):
-                node = self.Node(current.x + self.motion[i][0],
-                                 current.y + self.motion[i][1],
-                                 current.cost + self.motion[i][2], c_id)
+                node = Node(current.x + self.motion[i][0], current.y + self.motion[i][1], current.cost + self.motion[i][2], c_id)
                 n_id = self.calc_grid_index(node)
 
                 # If the node is not safe, do nothing
                 if not self.verify_node(node):
                     continue
 
-                if n_id in closed_set:
+                if n_id in visited_set:
                     continue
 
-                if n_id not in open_set:
-                    open_set[n_id] = node  # discovered a new node
+                if n_id not in fringe:
+                    fringe[n_id] = node  # discovered a new node
                 else:
-                    if open_set[n_id].cost > node.cost:
-                        # This path is the best until now. record it
-                        open_set[n_id] = node
+                    if fringe[n_id].cost > node.cost:
+                        fringe[n_id] = node
 
-        rx, ry = self.calc_final_path(goal_node, closed_set)
+        # Get list of r and y values for the final path
+        rx, ry = self.calc_final_path(goal_node, visited_set)
 
         return rx, ry
 
-    def calc_final_path(self, goal_node, closed_set):
-        # generate final course
-        rx, ry = [self.calc_grid_position(goal_node.x, self.min_x)], [
-            self.calc_grid_position(goal_node.y, self.min_y)]
+    def calc_final_path(self, goal_node, visited_set):
+        """Gets the final path x and y values from the nodes and visited sets
+
+        Args:
+            goal_node (Node): goal state of the path planner
+            visited_set (dict): Nodes that have been visited
+
+        Returns:
+            rx (list[float]): x position list of the final path,
+            ry (list[float]): y position list of the final path
+        """
+
+        # Generate final course
+        rx, ry = [self.calc_grid_position(goal_node.x, self.min_x)], [self.calc_grid_position(goal_node.y, self.min_y)]
+        
         parent_index = goal_node.parent_index
+        
         while parent_index != -1:
-            n = closed_set[parent_index]
+            n = visited_set[parent_index]
             rx.append(self.calc_grid_position(n.x, self.min_x))
             ry.append(self.calc_grid_position(n.y, self.min_y))
             parent_index = n.parent_index
 
-        
+        print("Path Found")
+        print("-----------------------")
         return rx, ry
 
     @staticmethod
     def calc_heuristic(n1, n2):
+        """Euclidean distance heuristic
+
+        Args:
+            n1 (float): x node position
+            n2 (float): y node position
+
+        Returns:
+            float: Euclidian Distance
+        """
         w = 1.0  # weight of heuristic
         d = w * np.hypot(n1.x - n2.x, n1.y - n2.y)
         return d
 
     def calc_grid_position(self, index, min_position):
-        """
-        calc grid position
-
-        :param index:
-        :param min_position:
-        :return:
-        """
         pos = index * self.resolution + min_position
         return pos
 
@@ -169,6 +206,14 @@ class PathPlanner:
         return (node.y - self.min_y) * self.x_width + (node.x - self.min_x)
 
     def verify_node(self, node):
+        """Verifies that the node is actually a legal move in the grid.
+
+        Args:
+            node (Node): Node containing the positions and max
+
+        Returns:
+            Bool: True if legal move, False if not a legal move
+        """
         px = self.calc_grid_position(node.x, self.min_x)
         py = self.calc_grid_position(node.y, self.min_y)
 
@@ -193,19 +238,15 @@ class PathPlanner:
         self.min_y = round(min(oy))
         self.max_x = round(max(ox))
         self.max_y = round(max(oy))
-        print("min_x:", self.min_x)
-        print("min_y:", self.min_y)
-        print("max_x:", self.max_x)
-        print("max_y:", self.max_y)
-
         self.x_width = round((self.max_x - self.min_x) / self.resolution)
         self.y_width = round((self.max_y - self.min_y) / self.resolution)
-        print("x_width:", self.x_width)
-        print("y_width:", self.y_width)
 
-        # obstacle map generation
-        self.obstacle_map = [[False for _ in range(self.y_width)]
-                             for _ in range(self.x_width)]
+
+        # Generates the obstacles by drawing 'lines' using the x and y values of the obstacles
+        # NOTE: Printing out the values of the d vale can be very time consuming to the processor
+        print("Calculating Obstacle Map (May take some time)")
+        print("-----------------------")
+        self.obstacle_map = [[False for _ in range(self.y_width)] for _ in range(self.x_width)]
         for ix in range(self.x_width):
             x = self.calc_grid_position(ix, self.min_x)
             for iy in range(self.y_width):
@@ -215,20 +256,26 @@ class PathPlanner:
                     if d <= self.rr:
                         self.obstacle_map[ix][iy] = True
                         break
+            
+            print("Obstacle Map is ",round((ix/self.x_width)*100), "% Percent Complete...")
+
+        print("Finished Drawing obstacle Map")
+        print("-----------------------")
 
     @staticmethod
     def get_motion_model():
+        """Defines the board/context of the robot for the state space search algorithms to work.
+
+        Returns:
+            list[list[float]]: Board that will be used for movement
+        """
         # dx, dy, cost
-        motion = [[1, 0, 1],
-                  [0, 1, 1],
-                  [-1, 0, 1],
-                  [0, -1, 1],
-                  [-1, -1, math.sqrt(2)],
-                  [-1, 1, math.sqrt(2)],
-                  [1, -1, math.sqrt(2)],
-                  [1, 1, math.sqrt(2)]]
+        motion = [[1, 0, 1], [0, 1, 1], [-1, 0, 1], [0, -1, 1],
+                  [-1, -1, math.sqrt(2)], [-1, 1, math.sqrt(2)], [1, -1, math.sqrt(2)], [1, 1, math.sqrt(2)]]
 
         return motion
+
+##############################   Helper Functions   ###########################################
 
 def get_final_path(rx, ry):
   """Gets the final path from the A* grid planning code.
@@ -244,10 +291,22 @@ def get_final_path(rx, ry):
   final_path = []
   for i in range(len(rx)):
     final_path.append((rx[i], ry[i]))
+
   return final_path
 
 def draw_obstacle(ox, oy, x, y):
-    r = .30500/2.0000
+    """Draws a box around the given center point of an obstacle.
+    Uses the predefined radius of the obstacles in globals
+
+    Args:
+        ox (list[float]): _description_
+        oy (list[float]): _description_
+        x (float): x coord. of the center of obstacle
+        y (float): y coord. of the center of obstacle
+    """
+
+    r = OBSTACLE_RADIUS
+
     ox.append(x-r)
     oy.append(y-r)
     ox.append(x-r)
@@ -268,59 +327,82 @@ def draw_obstacle(ox, oy, x, y):
     ox.append(x+0)
     oy.append(y-r)
 
+def draw_workspace(ox, oy):
+    """Draws a rough estimate of the workspace of the robot. 
+    Uses 1 + the rounded workspace lengths. EX: if real x workspace is 3.88, then
+    the simulations x workspace would be 5
 
-def main():
-    print(__file__ + " start!!")
-
-    # start and goal position
-    sx = .0001  # [m]
-    sy = .0001  # [m]
-    gx = 3.0500  # [m]
-    gy = 4.8800  # [m]
-    grid_size = .3000  # [m]
-    robot_radius = .075  # [m]
-
-    # set obstacle positions
-    ox, oy = [], []
-    for i in range(0, 5):
+    Args:
+        ox (list[float]): x coords of obstacles
+        oy (list[float]): y coords of obstacles
+    """
+    for i in range(0, WORKSPACE_X_MAX):
         ox.append(i)
         oy.append(0.0)
 
-    for i in range(0, 6):
-        ox.append(5)
+    for i in range(0, WORKSPACE_Y_MAX):
+        ox.append(WORKSPACE_X_MAX)
         oy.append(i)
 
-    for i in range(0, 6):
+    for i in range(0, WORKSPACE_Y_MAX):
         ox.append(i)
-        oy.append(6)
+        oy.append(WORKSPACE_Y_MAX)
 
-    for i in range(0, 6):
+    for i in range(0, WORKSPACE_Y_MAX):
         ox.append(0.0)
         oy.append(i)
 
-    px = 1
-    py = 1
-    draw_obstacle(ox,oy, px, py)
+################################# Driver Function  ############################################
 
+def start_path_planning():
+    
+    print("Starting the Path Planning")
+    print("-----------------------")
 
-    if ON_DESKTOP:  # pragma: no cover
+    ox, oy = [], [] # x and y coords of obstacles to be avoided
+
+    draw_workspace(ox, oy)
+    for i in range(NUMBER_OF_OBS):
+        draw_obstacle(ox, oy, OBS_POSITIONS[i][0], OBS_POSITIONS[i][1])
+
+    # If running program on desktop, draw simulation
+    if ON_DESKTOP: 
         try:
+            plt.title("Path Planning Grid", {'fontsize':14, 'fontweight': 'bold'})
+            plt.xlabel("X coordinates (x) [m]", {'fontweight': 'bold'} )
+            plt.ylabel("Y coordinates (y) [m]", {'fontweight': 'bold'})
             plt.plot(ox, oy, ".k")
-            plt.plot(sx, sy, "og")
-            plt.plot(gx, gy, "xb")
+            plt.plot(START_POSITION[0], START_POSITION[1], "og")
+            plt.plot(GOAL_POSITION[0], GOAL_POSITION[1], "xb")
             plt.grid(True)
             plt.axis("equal")
         except ImportError:
             pass
       
+    a_star = PathPlanner(ox, oy, GRID_SIZE, ROBOT_RADIUS_M) # initialize a* object
 
-    a_star = PathPlanner(ox, oy, grid_size, robot_radius)
-    rx, ry = a_star.planning(sx, sy, gx, gy)
-
-    # Goal to Start
+    # Gets the Final Path
+    rx, ry = a_star.planning(START_POSITION[0], START_POSITION[1], GOAL_POSITION[0], GOAL_POSITION[1]) 
     final_path = get_final_path(list(reversed(rx)),list(reversed(ry)))
-    print(final_path)
     
+    print("The Final path found: ")
+    print(final_path)
+    print("-----------------------")
+
+    # If running program on desktop, draw simulation
+    if ON_DESKTOP: 
+        try:
+            plt.plot(rx, ry, "-r")
+            plt.savefig('pathplanned.png')
+            plt.pause(0.001)
+            plt.show()
+            
+        except ImportError:
+            pass
+
+    return final_path
 
 if __name__ == '__main__':
-    main()
+    print("-------------------- Start --------------------------")
+    path_found = start_path_planning()
+    print("--------------------  End  --------------------")
