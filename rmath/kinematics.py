@@ -1,6 +1,6 @@
 import math
 from globals import *
-import micro_numpy as np
+import rmath.micro_numpy as np
 
 ##################################################
 # kinematics : Performs more complex 

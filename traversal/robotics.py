@@ -2,14 +2,14 @@ from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port, Stop, Direction
 from pybricks.tools import wait, StopWatch, DataLog
-from globals import *
-import kinematics as kn
-import micro_numpy as np
+from globals.globals import *
+import rmath.kinematics as kn
+import rmath.micro_numpy as np
 
 
 ##################################################
 # robotuic : Acts as a replacement 
-# for pybricks.robotics module. Contains classes 
+# for pybricks.traversal.robotics module. Contains classes 
 # for movement and navigation
 # 10/17/2023
 ##################################################

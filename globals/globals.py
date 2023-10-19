@@ -1,4 +1,4 @@
-#################### GLOBALS THAT NEED TO BE CHANGED ####################
+#################### globals.globals THAT NEED TO BE CHANGED ####################
 # Change this as needed
 ERROR_FACTOR_DISTANCE = 1.13 # error factor when moving on surface
 # CARPET = 1.13

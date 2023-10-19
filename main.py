@@ -4,10 +4,10 @@ from pybricks.ev3devices import (Motor)
 from pybricks.parameters import Port, Stop, Direction 
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.media.ev3dev import SoundFile, ImageFile
-from robotics import Robot, Navigator
-from globals import *
-import kinematics as kn
-import path_planner as plan
+from traversal.robotics import Robot, Navigator
+from globals.globals import *
+import rmath.kinematics as kn
+import planning.path_planner as plan
 
 print("-------------------- Start --------------------------")
 print("Program running...")
@@ -16,7 +16,7 @@ print("-----------------------")
 # Initialize the EV3 Brick.
 ev3 = EV3Brick()
 
-# Plan the Path using the initial variables in the globals file
+# Plan the Path using the initial variables in the globals.globals file
 path_found = plan.start_path_planning()
 
 # TODO: Somehow convert the path_found to a list of transformations
