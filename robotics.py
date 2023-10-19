@@ -2,7 +2,6 @@ from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port, Stop, Direction
 from pybricks.tools import wait, StopWatch, DataLog
-import math
 from globals import *
 import kinematics as kn
 import micro_numpy as np
@@ -85,8 +84,6 @@ class Robot:
         # Rotate tires by the calculated amount
         angle =  ((distance) / TIRE_CIRCUMFERENCE) * FULL_ROTATION
         angle = angle * ERROR_FACTOR_DISTANCE
-
-        print("Current Angle", self.left_motor.angle())
         
         # Turn tires
         self.left_motor. run_angle(TIRE_RPM, angle, wait=False)
@@ -99,14 +96,13 @@ class Robot:
         Args:
             angle (float): angle to turn robot [deg]
         """
-        print(angle)
-
         self.navigator.update() # notify naviagtor
         
         # Calculate the angle needed to rotate the robot to be in the specified angle
         arc_length = 2 * M_PI * ROBOT_RADIUS_MM * (angle/360)
         new_angle =  ((arc_length) / TIRE_CIRCUMFERENCE) * FULL_ROTATION
         new_angle =  new_angle * ERROR_FACTOR_TURN
+        
         # Turn tires
         self.left_motor. run_angle(TIRE_RPM, -new_angle, wait=False)
         self.right_motor.run_angle(TIRE_RPM, new_angle)

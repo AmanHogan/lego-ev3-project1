@@ -1,5 +1,3 @@
-
-
 import math
 from globals import *
 import micro_numpy as np
