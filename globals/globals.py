@@ -1,6 +1,4 @@
-
-
-#################### GLOBALS THAT NEED TO BE CHANGED ####################
+#################### globals.globals THAT NEED TO BE CHANGED ####################
 # Change this as needed
 ERROR_FACTOR_DISTANCE = 1.13 # error factor when moving on surface
 # CARPET = 1.13
@@ -14,7 +12,7 @@ ERROR_FACTOR_TURN = 1.22 # error factor when turning on surface
 # TILE = ?
 
 # Change these variables as needed as needed
-START_POSITION = [0.001, 0.001] # x and y pos of the robot [m]
+START_POSITION = [0.0001, 0.0001] # x and y pos of the robot [m]
 GOAL_POSITION = [2,2] # x and y pos of goal [m]
 NUMBER_OF_OBS = 1 # number of obstacles on grid [#] 
 OBS_POSITIONS = [[1, 1]] # x and y pos of center of obstacles [m]

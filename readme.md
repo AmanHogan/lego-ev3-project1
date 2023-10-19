@@ -1,4 +1,4 @@
-# Lego Robotics Project #1
+# Lego traversal.robotics Project #1
 ## Summary/Objective
 The objective of this assignment is to navigate a mobile robot through an obstacle course t
 location. The start position of the robot as well as the locations of all obstacles and of the
@@ -25,11 +25,11 @@ tiles.
 - Follow the steps on how to run programs on the lego ev3 here:https://pybricks.com/ev3-micropython/startbrick.html
 
 # Structure
-- `path_planner.py` module that plans the robots path using a* search. Below is a sample of what the module returns when running on desktop: ![Image of path planner](pathplanned.png)
-- `globals.py` module which contains the initial paramters which do not change after compilation. This is where the number of obstacles, position of onstacles, radius of the robot, and various other constants are initialized. 
-- `kinematics.py` module that performs more complex matrix operations related to kinematics and converts transforms -> commands and transforms -> matricies
-- `micro_numpy.py` module acts as a replacement for numpy for micropython. Performs basic trig and matrix operations
-- `robotics.py` Acts as a replacement for pybricks.robotics module. Contains classes for movement and navigation
+- `planning.path_planner.py` module that plans the robots path using a* search. Below is a sample of what the module returns when running on desktop: ![Image of path planner](pathplanned.png)
+- `globals.globals.py` module which contains the initial paramters which do not change after compilation. This is where the number of obstacles, position of onstacles, radius of the robot, and various other constants are initialized. 
+- `rmath.kinematics.py` module that performs more complex matrix operations related to rmath.kinematics and converts transforms -> commands and transforms -> matricies
+- `rmath.micro_numpy.py` module acts as a replacement for numpy for micropython. Performs basic trig and matrix operations
+- `traversal.robotics.py` Acts as a replacement for pybricks.traversal.robotics module. Contains classes for movement and navigation
 
 ## Authors
 - Aman Hogan-Bailey

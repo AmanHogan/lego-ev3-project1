@@ -1,8 +1,7 @@
-
-
 import math
-from globals import *
-import micro_numpy as np
+import rmath.micro_numpy as np
+from globals.globals import *
+
 
 ########################################################################################
 # NOTE: Authors note
@@ -29,6 +28,7 @@ try:
     ON_DESKTOP = True
 except ImportError:
     pass
+
 
 ################################ Node Class #################################################
 
@@ -296,7 +296,7 @@ def get_final_path(rx, ry):
 
 def draw_obstacle(ox, oy, x, y):
     """Draws a box around the given center point of an obstacle.
-    Uses the predefined radius of the obstacles in globals
+    Uses the predefined radius of the obstacles in globals.globals
 
     Args:
         ox (list[float]): _description_
@@ -393,7 +393,7 @@ def start_path_planning():
     if ON_DESKTOP: 
         try:
             plt.plot(rx, ry, "-r")
-            plt.savefig('pathplanned.png')
+            plt.savefig('planned_path.png')
             plt.pause(0.001)
             plt.show()
             
