@@ -46,7 +46,7 @@ robotics_project
  ┣ main.py
  ┗ readme.md
 ```
-- `planning.path_planner.py` module that plans the robots path using a* search. Below is a sample of what the module returns when running on desktop: ![Image of path planner](path_planned.png)
+- `planning.path_planner.py` module that plans the robots path using a* search. Below is a sample of what the module returns when running on desktop: ![Image of path planner](planned_path.png)
 - `globals.globals.py` module which contains the initial paramters which do not change after compilation. This is where the number of obstacles, position of onstacles, radius of the robot, and various other constants are initialized. 
 - `rmath.kinematics.py` module that performs more complex matrix operations related to rmath.kinematics and converts transforms -> commands and transforms -> matricies
 - `rmath.micro_numpy.py` module acts as a replacement for numpy for micropython. Performs basic trig and matrix operations
