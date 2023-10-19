@@ -1,3 +1,4 @@
+"""Acts as a replacement for numpy for micropython. Performs basic trig and matrix operations"""
 import math
 from globals import *
 

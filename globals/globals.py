@@ -1,3 +1,4 @@
+"""Contains constants and varaibles that will be modified before compile time"""
 #################### globals.globals THAT NEED TO BE CHANGED ####################
 # Change this as needed
 ERROR_FACTOR_DISTANCE = 1.13 # error factor when moving on surface
