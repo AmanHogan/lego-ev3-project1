@@ -1,4 +1,5 @@
 import math
+from globals import *
 
 ##################################################
 # micro_numpy : Acts as a replacement 
@@ -56,6 +57,19 @@ def array(data):
         return data
     else:
         raise ValueError("Input must be a list")
+    
+def hypot(x, y):
+  """Calculates the Euclidean distance between two points.
+
+  Args:
+    x: The x-coordinate of the first point.
+    y: The y-coordinate of the first point.
+
+  Returns:
+    The Euclidean distance between the two points.
+  """
+
+  return math.sqrt(x**2 + y**2)
 
 ################## Trigonometric functions ######################################
 
