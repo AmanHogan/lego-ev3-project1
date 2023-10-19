@@ -83,7 +83,8 @@ class Robot:
 
         # Angle [deg] = (distance [mm] / circum [mm]) * 360 [deg]
         # Rotate tires by the calculated amount
-        angle =  (distance / TIRE_CIRCUMFERENCE) * FULL_ROTATION
+        angle =  ((distance) / TIRE_CIRCUMFERENCE) * FULL_ROTATION
+        angle = angle * ERROR_FACTOR_DISTANCE
 
         print("Current Angle", self.left_motor.angle())
         
@@ -104,8 +105,8 @@ class Robot:
         
         # Calculate the angle needed to rotate the robot to be in the specified angle
         arc_length = 2 * M_PI * ROBOT_RADIUS_MM * (angle/360)
-        new_angle =  (arc_length / TIRE_CIRCUMFERENCE) * FULL_ROTATION
-
+        new_angle =  ((arc_length) / TIRE_CIRCUMFERENCE) * FULL_ROTATION
+        new_angle =  new_angle * ERROR_FACTOR_TURN
         # Turn tires
         self.left_motor. run_angle(TIRE_RPM, -new_angle, wait=False)
         self.right_motor.run_angle(TIRE_RPM, new_angle)

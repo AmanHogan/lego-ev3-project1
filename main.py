@@ -27,7 +27,7 @@ path_found = plan.start_path_planning()
 # Example List of transformations to make the robot move:
 # ('T' = Translate, x distance[mm], y distance[mm])
 # ('R' = Rotate, float = angle[deg]) 
-transformations = [('T', START_POSITION[0], START_POSITION[1]), ('R', 90), ('R', 90), ('R', 90), ('R', 90)] 
+transformations = [('T', START_POSITION[0], START_POSITION[1]), ('R',90), ('R',90), ('R',90), ('R',90) ] 
 
 print("List of Transformations", transformations)
 print("-----------------------")
@@ -38,7 +38,7 @@ robot = Robot(Motor(Port.A, positive_direction=Direction.COUNTERCLOCKWISE), Moto
 print("Converting transformations to executable commands ... ", transformations)
 print("-----------------------")
 commands = kn.transformation_to_commands(transformations)
-print(commands)
+
 print("Starting Path Traversal")
 print("-----------------------")
 robot.execute_commands(commands)
