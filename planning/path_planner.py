@@ -1,3 +1,6 @@
+"""Uses predefiend data on the robot in the globals file and plans a path to the goal using a* search algortihm
+"""
+
 import math
 import rmath.micro_numpy as np
 from globals.globals import *

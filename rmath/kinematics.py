@@ -1,3 +1,5 @@
+"""Performs more complex matrix operations related to kinematics and converts transforms -> commandsand transforms -> matricie
+"""
 import math
 from globals import *
 import rmath.micro_numpy as np

@@ -19,17 +19,39 @@ tiles.
 - `Python 2.7xx` or higher
 - LEGO® MINDSTORMS Education EV3 MicroPython Kit
     - The set up for the Lego Ev3 can be found her: https://pybricks.com/ev3-micropython/
+- matplotlib
 
 # How to Run / Usage
 - Clone this repository
 - Follow the steps on how to run programs on the lego ev3 here:https://pybricks.com/ev3-micropython/startbrick.html
+- Before running the prgram, confige the `./globals/globals.py` file to match your robot. For example, the `ERROR_FACTOR_DISTANCE` variable can change depending on what surface the robot travels on.
+- After configuration, you can plug in the lego ev3 robot into your pc, click the `debugger`, then click `Download and run`
+- To run on desktop, open a python terminal and run the test.py through Vscode or through the terminal with `python3 -m tests`
+
 
 # Structure
-- `planning.path_planner.py` module that plans the robots path using a* search. Below is a sample of what the module returns when running on desktop: ![Image of path planner](pathplanned.png)
+- Here is the overall project structure:
+```
+robotics_project
+ ┣ globals
+ ┃ ┗ globals.py
+ ┣ planning
+ ┃ ┗ path_planner.py
+ ┣ rmath
+ ┃ ┣ kinematics.py
+ ┃ ┗ micro_numpy.py
+ ┣ traversal
+ ┃ ┗ robotics.py
+ ┣ tests.py
+ ┣ main.py
+ ┗ readme.md
+```
+- `planning.path_planner.py` module that plans the robots path using a* search. Below is a sample of what the module returns when running on desktop: ![Image of path planner](planned_path.png)
 - `globals.globals.py` module which contains the initial paramters which do not change after compilation. This is where the number of obstacles, position of onstacles, radius of the robot, and various other constants are initialized. 
 - `rmath.kinematics.py` module that performs more complex matrix operations related to rmath.kinematics and converts transforms -> commands and transforms -> matricies
 - `rmath.micro_numpy.py` module acts as a replacement for numpy for micropython. Performs basic trig and matrix operations
 - `traversal.robotics.py` Acts as a replacement for pybricks.traversal.robotics module. Contains classes for movement and navigation
+- `tests.py` runs unit tests and allows you to view the path planned using matplotlib
 
 ## Authors
 - Aman Hogan-Bailey

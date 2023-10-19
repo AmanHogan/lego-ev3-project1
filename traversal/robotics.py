@@ -1,3 +1,5 @@
+"""responsible for moving the robot and keeping track of where the robot is"""
+
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port, Stop, Direction
