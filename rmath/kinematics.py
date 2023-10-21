@@ -115,33 +115,142 @@ def print_matrix(matrix) -> None:
     print("------------------------")
 
 
+
+
+def calculate_angle_differences(angles):
+    diffs = [angles[0]]
+    for i in range(1, len(angles)):
+        new_angle = angles[i] - angles[i - 1]
+        if new_angle > 180:
+            new_angle -= 360
+        diffs.append(new_angle)
+    return diffs
+
+def calculate_distances(positions):
+    dists = []
+    for i in range(len(positions) - 1):
+        distance = math.sqrt((positions[i + 1][0] - positions[i][0]) ** 2 +
+                            (positions[i + 1][1] - positions[i][1]) ** 2)
+        dists.append(distance)
+    return dists
+
+def generate_commands(positions, angles):
+    diffs = calculate_angle_differences(angles)
+    dists = calculate_distances(positions)
+    
+    commands = []
+    for i in range(len(positions) - 1):
+        commands.append(("turn", diffs[i]))
+        commands.append(("move", dists[i]))
+    
+    return commands
+
+def commands_to_transformations(commands):
+    transformations = []
+    current_x, current_y, current_angle = 0, 0, 0
+
+    for command in commands:
+        action, value = command
+
+        if action == 'move':
+            angle_rad = math.radians(current_angle)
+            dx = value * math.cos(angle_rad) 
+            dy = value * math.sin(angle_rad)
+            transformations.append(('T', dx, dy))
+            current_x += dx
+            current_y += dy
+        elif action == 'turn':
+            transformations.append(('R', value))
+            current_angle += value
+
+    return transformations
+
+
+def calculates_positions(positions):
+    # Example usage:
+
+    angles = find_angles_between_positions(positions)
+    diffs = []
+    diffs.append(angles[0])
+
+    for i in range(len(angles) -1):
+        new_angle = angles[i+1]-angles[i]
+        if new_angle > 180:
+            new_angle -= 360
+        diffs.append(new_angle)
+        
+
+
+    dists = []
+    for i in range(len(positions)-1) :
+        distance = math.sqrt((positions[i+1][0] - positions[i][0])** 2 + ((positions[i+1][1] - positions[i][1]) ** 2))
+        dists.append(distance)
+
+    # Remove the first element from the dists list.
+    commands = []
+    for i in range(len(positions)-1):
+        commands.append(("turn", diffs[i]))
+        commands.append(("move",dists[i] * 1000.0000))
+        
+    print("------------------------")
+    print("Angles",diffs)
+    print("Distances", dists)
+    print("------------------------")
+
+
+    return commands
+
+
+
+def find_angles_between_positions(positions):
+    """Calculates the angles between a list of positions in degrees.
+
+    Args:
+    positions: A list of tuples containing the coordinates of the positions.
+
+    Returns:
+    A list of the angles between the positions in degrees, in the range [0, 360].
+    """
+
+    angles = []
+    diffs = []
+    counter = 0
+  
+    for i in range(len(positions) - 1): 
+        p1 = positions[i]
+        p2 = positions[i + 1]
+
+        angle = math.atan2(p2[1] - p1[1], p2[0] - p1[0])
+
+        # Convert the angle to degrees.
+        angle_in_degrees = math.degrees(angle)
+
+        # Wrap the angle to the range [0, 360].
+        angle_in_degrees %= 360
+
+        angles.append(angle_in_degrees)
+
+        counter += 1
+
+
+    return angles
 # Example usage
 if __name__ == "__main__":
 
     print("------------------------")
 
     # Example Transformations
-    transformations = [('T', 1000, 0), ('R', 90), ('T', 0, 1000), ('R', 90)]
+    path_found = [(0.0, 0.0), (0.3, 0.3), (0.3, 0.6), (0.6, 0.9), (0.6, 1.2), (0.9, 1.5), (1.2, 1.8), (1.5, 1.8), (1.8, 2.1), (2.1, 2.1)]
 
-    # Convert to Transformations to commands
-    commands = transformation_to_commands(transformations)
 
-    # Convert Transformations to resltant matrix
-    r_matrix = transforms_to_matrix(transformations)
-
-    # Get x, y, and orientation
-    x_val = r_matrix[0][2]  
-    y_val = r_matrix[1][2] 
-    result_orientation = get_orientation(r_matrix)
-
-    print("Input Transformations")
-    print(transformations)
+   
+    print("Converting positions to executable commands ... ")
+    print("-----------------------")
+    angles = find_angles_between_positions(path_found)
+    angles.pop(0)
+    commands = generate_commands(path_found, angles)
     print("------------------------")
-    print("Commands")
-    print_commands(commands)
-    print("------------------------")
-    print("Final Matrix")
-    print_matrix(r_matrix)
-    print("Final Position (x, y):", round(x_val, 4), round(y_val, 4))
-    print("Final Orientation (degrees):", result_orientation)
+    print("Angles:", angles)
+    print("Distances:", calculate_distances(path_found))
+    print("Commands:", commands)
     print("------------------------")

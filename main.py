@@ -16,30 +16,30 @@ print("-----------------------")
 # Initialize the EV3 Brick.
 ev3 = EV3Brick()
 
-# Plan the Path using the initial variables in the globals.globals file
+#Plan the Path using the initial variables in the globals.globals file ##########
 path_found = plan.start_path_planning()
+commands = kn.calculates_positions(path_found)
+print(commands)
 
-# TODO: Somehow convert the path_found to a list of transformations
-# Example: transformations = path_to_transforms(path_found)
+transformations = kn.commands_to_transformations(commands)
 
 # Example List of transformations to make the robot move:
 # ('T' = Translate, x distance[mm], y distance[mm])
 # ('R' = Rotate, float = angle[deg]) 
-transformations = [('T', START_POSITION[0], START_POSITION[1]), ('R',90), ('R',90), ('R',90), ('R',90) ] 
-
 print("List of Transformations", transformations)
 print("-----------------------")
 
 navigator = Navigator(transformations)
 robot = Robot(Motor(Port.A, positive_direction=Direction.COUNTERCLOCKWISE), Motor(Port.D, positive_direction=Direction.COUNTERCLOCKWISE), navigator)
 
-print("Converting transformations to executable commands ... ", transformations)
+print("Converting transformations to executable commands ... ")
 print("-----------------------")
 commands = kn.transformation_to_commands(transformations)
 
 print("Starting Path Traversal")
 print("-----------------------")
 robot.execute_commands(commands)
+
 
 print("--------------------  End  --------------------")
 
