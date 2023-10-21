@@ -377,8 +377,19 @@ def start_path_planning():
             plt.plot(ox, oy, ".k")
             plt.plot(START_POSITION[0], START_POSITION[1], "og")
             plt.plot(GOAL_POSITION[0], GOAL_POSITION[1], "xb")
+
+             # Create a list of the multiples of 0.305 up to 20.
+            ticks = [i * 0.305 for i in range(1, 20)]
+            plt.yticks(ticks)
+            plt.xticks(ticks)
+            plt.yticks()
+            plt.xticks()
+            plt.xlim(0.01, 3.05)
+            plt.ylim(0.01, 4.88)
             plt.grid(True)
-            plt.axis("equal")
+            # plt.axis("equal")
+
+
         except ImportError:
             pass
       
