@@ -33,6 +33,18 @@ GOAL_POSITION = [3.6,1.8] # x and y pos of goal [m]
 NUMBER_OF_OBS = 4 # number of obstacles on grid [#] 
 OBS_POSITIONS = [[.915,.305], [.305,1.22], [1.5,1.5], [2.4,1.2]]
 ```
+
+Also change your robot constants. Here are our robot constants:
+```
+TIRE_CIRCUMFERENCE = 178 # Circumference of the tire in [mm]
+FULL_ROTATION = 360 # [#]
+TIRE_RPM = 400 # Revolutions per minute [r/min]
+ROBOT_LENGTH = 105 # Length of the robot in [mm]
+DIST_BTWN_WHEELS = 158.0000 # Distance between the wheels in [mm]
+ROBOT_RADIUS_MM = (DIST_BTWN_WHEELS/2.0000) # Radius of robot tire axel [mm]
+M_PI = 3.14159265359  # pi constant [#]
+ROBOT_RADIUS_M = .18
+```
 For variables like the `ERROR_FACTOR_DISTANCE`, it will change depending on what surface the robot travels on. Higher error for rougher surfaces, lower error for smoother surfaces.
 - After configuration, you can plug in the lego ev3 robot into your pc, click the `debugger`, then click `Download and run`
 - To run on desktop, open a python terminal and run the test.py through Vscode or through the terminal with `python3 -m tests`
