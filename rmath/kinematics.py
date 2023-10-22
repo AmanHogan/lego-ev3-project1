@@ -115,33 +115,168 @@ def print_matrix(matrix) -> None:
     print("------------------------")
 
 
+
+
+def calculate_angle_differences(angles):
+    """Caluculates the differences between the current angle and the 
+    angle needed to get to the new orientation. This will give a list
+    of angles the robot has to move to.
+
+    Args:
+        angles (list[float]): list of current angle
+
+    Returns:
+        list[float]: his will give a list of angles the robot has to move to.
+    """
+    diffs = [angles[0]]
+    for i in range(1, len(angles)):
+        new_angle = angles[i] - angles[i - 1]
+        if new_angle > 180:
+            new_angle -= 360
+        diffs.append(new_angle)
+    return diffs
+
+def calculate_distances(p):
+    """Calculates the distances between dx and dy points
+
+    Args:
+        p (list[tuple[float,float]]): list of dx dy points
+
+    Returns:
+        list[float]: list of distances between points
+    """
+    d = []
+    for i in range(len(p) - 1):
+        c = math.sqrt((p[i + 1][0] - p[i][0]) ** 2 + (p[i + 1][1] - p[i][1]) ** 2)
+        d.append(c)
+    return d
+
+def generate_commands(p, theta):
+    """Generates robot commands from positions and angles
+
+    Args:
+        p (list[float, float]): list of points
+        theta (list[float]): list of angles in degrees
+
+    Returns:
+        list[tuple[str, float]]: list of robot commands of type
+        [<move or turn>, <angle or distance>]
+
+    """
+    theta_delta = calculate_angle_differences(theta)
+    d = calculate_distances(p)
+    
+    commands = []
+    for i in range(len(p) - 1):
+        commands.append(("turn", theta_delta[i]))
+        commands.append(("move", d[i]))
+    
+    return commands
+
+def commands_to_transformations(commands):
+    """Converts commands to transformations of type:
+    (T, 100, 100) or (R, 45)
+
+    Args:
+        commands (list[tuple[str,float]]): list of robot commands
+
+    Returns:
+        t (list[tuple[str,float]] | list[tuple[str,float,float]]): list of transformations
+    """
+    t = []
+    x, y, theta_deg = 0, 0, 0
+
+    for command in commands:
+        action, value = command
+
+        if action == 'move':
+            theta_rad = math.radians(theta_deg)
+            dx = value * math.cos(theta_rad) 
+            dy = value * math.sin(theta_rad)
+            t.append(('T', round(dx,5), round(dy,5)))
+            x += dx
+            y += dy
+
+        elif action == 'turn':
+            t.append(('R', round(value,5)))
+            theta_deg += value
+
+    return t
+
+
+def positions_to_commands(positions):
+
+    angles = find_angles_between_positions(positions)
+    diffs = []
+    diffs.append(angles[0])
+
+    for i in range(len(angles) -1):
+        new_angle = angles[i+1]-angles[i]
+        if new_angle > 180:
+            new_angle -= 360
+        diffs.append(new_angle)
+        
+    dists = []
+    for i in range(len(positions)-1) :
+        distance = math.sqrt((positions[i+1][0] - positions[i][0])** 2 + ((positions[i+1][1] - positions[i][1]) ** 2))
+        dists.append(distance)
+
+    # Remove the first element from the dists list.
+    commands = []
+    for i in range(len(positions)-1):
+        commands.append(("turn", round(diffs[i],5)))
+        commands.append(("move", round(dists[i] * 1000.0000,5)))
+        
+    return commands
+
+
+def find_angles_between_positions(positions):
+    """Calculates the angles between a list of positions in degrees.
+
+    Args:
+    positions: A list of tuples containing the coordinates of the positions.
+
+    Returns:
+    A list of the angles between the positions in degrees, in the range [0, 360].
+    """
+
+    angles = []
+    diffs = []
+    counter = 0
+  
+    for i in range(len(positions) - 1): 
+        p1 = positions[i]
+        p2 = positions[i + 1]
+
+        angle = math.atan2(p2[1] - p1[1], p2[0] - p1[0])
+
+        # Convert the angle to degrees.
+        angle_in_degrees = math.degrees(angle)
+
+        # Wrap the angle to the range [0, 360].
+        angle_in_degrees %= 360
+
+        angles.append(angle_in_degrees)
+
+        counter += 1
+
+
+    return angles
 # Example usage
 if __name__ == "__main__":
 
     print("------------------------")
 
     # Example Transformations
-    transformations = [('T', 1000, 0), ('R', 90), ('T', 0, 1000), ('R', 90)]
+    path_found = [(0.0, 0.0), (0.3, 0.3), (0.3, 0.6), (0.6, 0.9), (0.6, 1.2), (0.9, 1.5), (1.2, 1.8), (1.5, 1.8), (1.8, 2.1), (2.1, 2.1)]
 
-    # Convert to Transformations to commands
-    commands = transformation_to_commands(transformations)
-
-    # Convert Transformations to resltant matrix
-    r_matrix = transforms_to_matrix(transformations)
-
-    # Get x, y, and orientation
-    x_val = r_matrix[0][2]  
-    y_val = r_matrix[1][2] 
-    result_orientation = get_orientation(r_matrix)
-
-    print("Input Transformations")
-    print(transformations)
+    print("Converting positions to executable commands ... ")
+    print("-----------------------")
+    angles = find_angles_between_positions(path_found)
+    angles.pop(0)
+    commands = generate_commands(path_found, angles)
     print("------------------------")
-    print("Commands")
-    print_commands(commands)
-    print("------------------------")
-    print("Final Matrix")
-    print_matrix(r_matrix)
-    print("Final Position (x, y):", round(x_val, 4), round(y_val, 4))
-    print("Final Orientation (degrees):", result_orientation)
+    print("Angles:", angles)
+    print("Distances:", calculate_distances(path_found))
+    print("Commands:", commands)
     print("------------------------")

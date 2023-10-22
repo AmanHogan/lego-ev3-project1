@@ -5,38 +5,42 @@ from planning import path_planner as plan
 from globals.globals import *
 
 class TestPathPlanner(unittest.TestCase):
-    def test_path_planning(self):
+
+    def test_robot_calculations(self):
+
+        path_found = None
+        transformations = None
+        commands = None
+
+        # Test path planning
         path_found = plan.start_path_planning()
-
-class TestKinnematics(unittest.TestCase):
-
-    def test_kinematics(self):
-        transformations = [('T', START_POSITION[0], START_POSITION[1]), ('R',90), ('R',90), ('R',90), ('R',90) ] 
-        print("List of Transformations", transformations)
+        
+        # Test angle calculations
+        print("List of Angles")
+        angles_list = kn.find_angles_between_positions(path_found)
+        angles_list = [round(i,5) for i in angles_list]
+        angles_list.pop(0)
+        print(angles_list)
         print("-----------------------")
+
+        # Test distance calculations
+        print("List of distances")
+        distances_list = kn.calculate_distances(path_found)
+        distances_list = [round(i,5) for i in distances_list]
+        print(distances_list)
+        print("-----------------------")
+
+        # Test Robot command generation
+        commands = kn.positions_to_commands(path_found)
+        print("List of commands")
+        print(commands)
+        print("-----------------------")
+
+        # Test transformation generation
+        transformations = kn.commands_to_transformations(commands)
+        print("List of Transformations")
         print(transformations)
-
-        print("Resultant matrix from transformations ... ", transformations)
         print("-----------------------")
-        r_matrix = kn.transforms_to_matrix(transformations)
-        kn.print_matrix(r_matrix)
-        print("------------------------")
-
-        # Get x, y, and orientation
-        x_val = r_matrix[0][2]  
-        y_val = r_matrix[1][2] 
-        result_orientation = kn.get_orientation(r_matrix)
-        print("Final Position (x, y):", round(x_val, 4), round(y_val, 4))
-        print("Final Orientation (degrees):", result_orientation)
-
-class TestCommandConversion(unittest.TestCase):
-
-    def test_command_conversion(self):
-        transformations = [('T', START_POSITION[0], START_POSITION[1]), ('R',90), ('R',90), ('R',90), ('R',90) ] 
-        print("Converting transformations to executable commands ... ", transformations)
-        print("-----------------------")
-        commands = kn.transformation_to_commands(transformations)
-        kn.print_commands(commands)
 
 if __name__ == '__main__':
     print("-------------------- Start --------------------------")

@@ -16,30 +16,50 @@ print("-----------------------")
 # Initialize the EV3 Brick.
 ev3 = EV3Brick()
 
-# Plan the Path using the initial variables in the globals.globals file
+# Plan the path
+ev3.speaker.set_speech_options(voice='f3')
+ev3.speaker.say("Beginning Path plannig")
 path_found = plan.start_path_planning()
+ev3.speaker.say("Path Found")
 
-# TODO: Somehow convert the path_found to a list of transformations
-# Example: transformations = path_to_transforms(path_found)
-
-# Example List of transformations to make the robot move:
-# ('T' = Translate, x distance[mm], y distance[mm])
-# ('R' = Rotate, float = angle[deg]) 
-transformations = [('T', START_POSITION[0], START_POSITION[1]), ('R',90), ('R',90), ('R',90), ('R',90) ] 
-
-print("List of Transformations", transformations)
+# Get angles between points on path found
+print("List of Angles")
+angles = kn.find_angles_between_positions(path_found)
+angles = [round(i,5) for i in angles]
+angles.pop(0)
+print(angles)
 print("-----------------------")
 
+# Get distances between points on path found
+print("List of distances")
+distances = kn.calculate_distances(path_found)
+distances = [round(i,5) for i in distances]
+print(distances)
+print("-----------------------")
+
+# Convert path found to robot commands
+ev3.speaker.say("Converting Path to Robot Commands")
+commands = kn.positions_to_commands(path_found)
+print("List of commands")
+print(commands)
+print("-----------------------")
+
+# Convert Robot commands to transformations
+transformations = kn.commands_to_transformations(commands)
+print("List of Transformations")
+print(transformations)
+print("-----------------------")
+
+# Navigator (Handles transformations)
+# Robot (Handles commands)
+# Link transforms <-> commands, to keep track of movement
 navigator = Navigator(transformations)
 robot = Robot(Motor(Port.A, positive_direction=Direction.COUNTERCLOCKWISE), Motor(Port.D, positive_direction=Direction.COUNTERCLOCKWISE), navigator)
 
-print("Converting transformations to executable commands ... ", transformations)
-print("-----------------------")
-commands = kn.transformation_to_commands(transformations)
-
+# Start robot commands
+ev3.speaker.say("Executing Commands")
 print("Starting Path Traversal")
 print("-----------------------")
 robot.execute_commands(commands)
-
 print("--------------------  End  --------------------")
 
