@@ -15,9 +15,9 @@ ERROR_FACTOR_TURN = TILE_ERROR_TURN # Change this as needed
 
 # Change these variables as needed as needed
 START_POSITION = [0.0001, 0.0001] # x and y pos of the robot [m]
-GOAL_POSITION = [.610, 1.525] # x and y pos of goal [m]
-NUMBER_OF_OBS = 3 # number of obstacles on grid [#] 
-OBS_POSITIONS = [[.915,.305], [0,.610], [.305,1.22]] # x and y pos of center of obstacles [m]
+GOAL_POSITION = [3.6,1.8] # x and y pos of goal [m]
+NUMBER_OF_OBS = 4 # number of obstacles on grid [#] 
+OBS_POSITIONS = [[.915,.305], [.305,1.22], [1.5,1.5], [2.4,1.2]] # x and y pos of center of obstacles [m]
 #########################################################################
 
 ####################### ROBOT CONSTANTS #################################
@@ -35,6 +35,6 @@ ROBOT_RADIUS_M = .18 # Length of the robot in [m]
 GRID_SIZE = .300 # precision of grid [m]
 OBSTACLE_DIAMETER = .30500 # diameter of obstacles [m]
 OBSTACLE_RADIUS = .30500/2.0000 # radius of obstacles [m]
-WORKSPACE_X_MAX = 5 # workspace x max value of grid [m]
-WORKSPACE_Y_MAX = 6 # workspace y max value of grid[m]
+WORKSPACE_X_MAX = 6 # workspace x max value of grid [m]
+WORKSPACE_Y_MAX = 5 # workspace y max value of grid[m]
 #########################################################################

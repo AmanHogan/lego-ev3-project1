@@ -118,6 +118,16 @@ def print_matrix(matrix) -> None:
 
 
 def calculate_angle_differences(angles):
+    """Caluculates the differences between the current angle and the 
+    angle needed to get to the new orientation. This will give a list
+    of angles the robot has to move to.
+
+    Args:
+        angles (list[float]): list of current angle
+
+    Returns:
+        list[float]: his will give a list of angles the robot has to move to.
+    """
     diffs = [angles[0]]
     for i in range(1, len(angles)):
         new_angle = angles[i] - angles[i - 1]
@@ -126,48 +136,75 @@ def calculate_angle_differences(angles):
         diffs.append(new_angle)
     return diffs
 
-def calculate_distances(positions):
-    dists = []
-    for i in range(len(positions) - 1):
-        distance = math.sqrt((positions[i + 1][0] - positions[i][0]) ** 2 +
-                            (positions[i + 1][1] - positions[i][1]) ** 2)
-        dists.append(distance)
-    return dists
+def calculate_distances(p):
+    """Calculates the distances between dx and dy points
 
-def generate_commands(positions, angles):
-    diffs = calculate_angle_differences(angles)
-    dists = calculate_distances(positions)
+    Args:
+        p (list[tuple[float,float]]): list of dx dy points
+
+    Returns:
+        list[float]: list of distances between points
+    """
+    d = []
+    for i in range(len(p) - 1):
+        c = math.sqrt((p[i + 1][0] - p[i][0]) ** 2 + (p[i + 1][1] - p[i][1]) ** 2)
+        d.append(c)
+    return d
+
+def generate_commands(p, theta):
+    """Generates robot commands from positions and angles
+
+    Args:
+        p (list[float, float]): list of points
+        theta (list[float]): list of angles in degrees
+
+    Returns:
+        list[tuple[str, float]]: list of robot commands of type
+        [<move or turn>, <angle or distance>]
+
+    """
+    theta_delta = calculate_angle_differences(theta)
+    d = calculate_distances(p)
     
     commands = []
-    for i in range(len(positions) - 1):
-        commands.append(("turn", diffs[i]))
-        commands.append(("move", dists[i]))
+    for i in range(len(p) - 1):
+        commands.append(("turn", theta_delta[i]))
+        commands.append(("move", d[i]))
     
     return commands
 
 def commands_to_transformations(commands):
-    transformations = []
-    current_x, current_y, current_angle = 0, 0, 0
+    """Converts commands to transformations of type:
+    (T, 100, 100) or (R, 45)
+
+    Args:
+        commands (list[tuple[str,float]]): list of robot commands
+
+    Returns:
+        t (list[tuple[str,float]] | list[tuple[str,float,float]]): list of transformations
+    """
+    t = []
+    x, y, theta_deg = 0, 0, 0
 
     for command in commands:
         action, value = command
 
         if action == 'move':
-            angle_rad = math.radians(current_angle)
-            dx = value * math.cos(angle_rad) 
-            dy = value * math.sin(angle_rad)
-            transformations.append(('T', dx, dy))
-            current_x += dx
-            current_y += dy
+            theta_rad = math.radians(theta_deg)
+            dx = value * math.cos(theta_rad) 
+            dy = value * math.sin(theta_rad)
+            t.append(('T', round(dx,5), round(dy,5)))
+            x += dx
+            y += dy
+
         elif action == 'turn':
-            transformations.append(('R', value))
-            current_angle += value
+            t.append(('R', round(value,5)))
+            theta_deg += value
 
-    return transformations
+    return t
 
 
-def calculates_positions(positions):
-    # Example usage:
+def positions_to_commands(positions):
 
     angles = find_angles_between_positions(positions)
     diffs = []
@@ -179,8 +216,6 @@ def calculates_positions(positions):
             new_angle -= 360
         diffs.append(new_angle)
         
-
-
     dists = []
     for i in range(len(positions)-1) :
         distance = math.sqrt((positions[i+1][0] - positions[i][0])** 2 + ((positions[i+1][1] - positions[i][1]) ** 2))
@@ -189,17 +224,10 @@ def calculates_positions(positions):
     # Remove the first element from the dists list.
     commands = []
     for i in range(len(positions)-1):
-        commands.append(("turn", diffs[i]))
-        commands.append(("move",dists[i] * 1000.0000))
+        commands.append(("turn", round(diffs[i],5)))
+        commands.append(("move", round(dists[i] * 1000.0000,5)))
         
-    print("------------------------")
-    print("Angles",diffs)
-    print("Distances", dists)
-    print("------------------------")
-
-
     return commands
-
 
 
 def find_angles_between_positions(positions):
@@ -242,8 +270,6 @@ if __name__ == "__main__":
     # Example Transformations
     path_found = [(0.0, 0.0), (0.3, 0.3), (0.3, 0.6), (0.6, 0.9), (0.6, 1.2), (0.9, 1.5), (1.2, 1.8), (1.5, 1.8), (1.8, 2.1), (2.1, 2.1)]
 
-
-   
     print("Converting positions to executable commands ... ")
     print("-----------------------")
     angles = find_angles_between_positions(path_found)

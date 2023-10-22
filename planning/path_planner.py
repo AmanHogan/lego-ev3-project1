@@ -245,7 +245,7 @@ class PathPlanner:
         self.y_width = round((self.max_y - self.min_y) / self.resolution)
 
 
-        # Generates the obstacles by drawing 'lines' using the x and y values of the obstacles
+        # Grid-based Obstacle Mapping
         # NOTE: Printing out the values of the d vale can be very time consuming to the processor
         print("Calculating Obstacle Map (May take some time)")
         print("-----------------------")
@@ -293,7 +293,7 @@ def get_final_path(rx, ry):
 
   final_path = []
   for i in range(len(rx)):
-    final_path.append((rx[i], ry[i]))
+    final_path.append((round(rx[i],5), round(ry[i],5) ))
 
   return final_path
 
@@ -371,6 +371,7 @@ def start_path_planning():
     # If running program on desktop, draw simulation
     if ON_DESKTOP: 
         try:
+            plt.figure(figsize=(8,8))
             plt.title("Path Planning Grid", {'fontsize':14, 'fontweight': 'bold'})
             plt.xlabel("X coordinates (x) [m]", {'fontweight': 'bold'} )
             plt.ylabel("Y coordinates (y) [m]", {'fontweight': 'bold'})
@@ -384,8 +385,9 @@ def start_path_planning():
             plt.xticks(ticks)
             plt.yticks()
             plt.xticks()
-            plt.xlim(0.01, 3.05)
-            plt.ylim(0.01, 4.88)
+            plt.xlim(0, 4.88)
+            plt.ylim(0, 3.05)
+            plt.xticks(rotation=45, ha='right')
             plt.grid(True)
             # plt.axis("equal")
 
