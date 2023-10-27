@@ -244,8 +244,6 @@ class PathPlanner:
         self.x_width = round((self.max_x - self.min_x) / self.resolution)
         self.y_width = round((self.max_y - self.min_y) / self.resolution)
 
-
-        # Grid-based Obstacle Mapping
         # NOTE: Printing out the values of the d vale can be very time consuming to the processor
         print("Calculating Obstacle Map (May take some time)")
         print("-----------------------")
@@ -339,21 +337,34 @@ def draw_workspace(ox, oy):
         ox (list[float]): x coords of obstacles
         oy (list[float]): y coords of obstacles
     """
-    for i in range(0, WORKSPACE_X_MAX):
-        ox.append(i)
-        oy.append(0.0)
 
-    for i in range(0, WORKSPACE_Y_MAX):
-        ox.append(WORKSPACE_X_MAX)
-        oy.append(i)
+    x_t = [i*.07625 for i in range(65)]
+    y_t = [3.05 for i in range(65)]
 
-    for i in range(0, WORKSPACE_Y_MAX):
-        ox.append(i)
-        oy.append(WORKSPACE_Y_MAX)
+    x_b = [i*.07625 for i in range(65)]
+    y_b = [0 for i in range(65)]
 
-    for i in range(0, WORKSPACE_Y_MAX):
-        ox.append(0.0)
-        oy.append(i)
+    x_r = [4.88 for i in range(41)]
+    y_r = [i*.07625 for i in range(41)]
+
+    x_l = [0 for i in range(41)]
+    y_l = [i*.07625 for i in range(41)]
+    
+
+    for i in range(65):
+        ox.append(x_t[i])
+        oy.append(y_t[i])
+
+        ox.append(x_b[i])
+        oy.append(y_b[i])
+
+    for i in range(41):
+        ox.append(x_r[i])
+        oy.append(y_r[i])
+
+        ox.append(x_l[i])
+        oy.append(y_l[i])
+
 
 ################################# Driver Function  ############################################
 
