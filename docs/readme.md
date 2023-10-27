@@ -70,7 +70,9 @@ robotics_project
 - `rmath.micro_numpy.py` module acts as a replacement for numpy for micropython. Performs basic trig and matrix operations
 - `traversal.robotics.py` Acts as a replacement for pybricks.traversal.robotics module. Contains classes for movement and navigation
 - `tests.py` runs unit tests and allows you to view the path planned using matplotlib.
-- Below is a video of the roobot running. The video is sped up by x4. [![Watch the video](robot_video.mp4)
+- Below is a video of the roobot running. The video is sped up by x4. https://github.com/AmanHogan/lego-path-planning-robot/assets/100090134/abc51d37-cf64-41f4-8ab1-a4ccb3faffd9
+
+
 ## Authors
 - Aman Hogan-Bailey
 - Sai Karthik Reddy Muddana Laligari
