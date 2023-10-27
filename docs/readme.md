@@ -27,26 +27,25 @@ tiles.
 ```
 ERROR_FACTOR_DISTANCE = ...
 ERROR_FACTOR_TURN = ...
-START_POSITION = [0.0001, 0.0001] # x and y pos of the robot [m]
-GOAL_POSITION = [3.6,1.8] # x and y pos of goal [m]
-NUMBER_OF_OBS = 4 # number of obstacles on grid [#] 
-OBS_POSITIONS = [[.915,.305], [.305,1.22], [1.5,1.5], [2.4,1.2]]
+START_POSITION = ... # x and y pos of the robot [m]
+GOAL_POSITION = ... # x and y pos of goal [m]
+NUMBER_OF_OBS = ... # number of obstacles on grid [#] 
+OBS_POSITIONS = [[...], [...], ...]
 ```
-
-Also change your robot constants. Here are our robot constants:
+Here are the initial robot configurations for out design. If you design is different, change these parameters
 ```
-TIRE_CIRCUMFERENCE = 178 # Circumference of the tire in [mm]
-FULL_ROTATION = 360 # [#]
-TIRE_RPM = 400 # Revolutions per minute [r/min]
-ROBOT_LENGTH = 105 # Length of the robot in [mm]
-DIST_BTWN_WHEELS = 158.0000 # Distance between the wheels in [mm]
-ROBOT_RADIUS_MM = (DIST_BTWN_WHEELS/2.0000) # Radius of robot tire axel [mm]
+TIRE_CIRCUMFERENCE = ... # Circumference of the tire in [mm]
+FULL_ROTATION = ... # [#]
+TIRE_RPM = ... # Revolutions per minute [r/min]
+ROBOT_LENGTH = ... # Length of the robot in [mm]
+DIST_BTWN_WHEELS = ... # Distance between the wheels in [mm]
+ROBOT_RADIUS_MM = (.../2.0000) # Radius of robot tire axel [mm]
 M_PI = 3.14159265359  # pi constant [#]
-ROBOT_RADIUS_M = .18
+ROBOT_RADIUS_M = ...
 ```
-For variables like the `ERROR_FACTOR_DISTANCE`, it will change depending on what surface the robot travels on. Higher error for rougher surfaces, lower error for smoother surfaces.
-- After configuration, you can plug in the lego ev3 robot into your pc, click the `debugger`, then click `Download and run`
-- To run on desktop, open a python terminal and run the test.py through Vscode or through the terminal with `python3 -m tests`
+For variables like the `ERROR_FACTOR_DISTANCE` and `ERROR_FACTOR_TURN`, it will change depending on what surface the robot travels on. Higher error for rougher surfaces, lower error for smoother surfaces. This could also change dependeing on your robot design.
+- After configuration, you can plug in the lego ev3 robot into your pc, click the `debugger`, then click `Download and run`. The files should then upload to your robot.
+- To run a test on desktop, to see a visual of your path planning, navigate to the `tests.py` and click the `Run` button in Vscode (You dont need a robot for this part but you do need a Python Interpreter with MatplotLib). You can also open a python terminal and run the `test.py` through Vscode or through the terminal with `python3 -m tests`
 
 # Structure
 - Here is the overall project structure:
@@ -65,7 +64,7 @@ robotics_project
  ┣ main.py
  ┗ readme.md
 ```
-- `planning.path_planner.py` module that plans the robots path using a* search. Below is a sample of what the module returns when running on desktop: ![Image of path planner](planned_path.png) As you can see, each block is .305 x .305 and the `X` markers are nodes found that were possible paths and the red line is the path traversed. YOu can change the grid sizes and workspace of the robot in `./globals/globals.py`. Here is a reference for the implementation of the grid based cell decomp with matplotlib : https://github.com/sponsors/AtsushiSakai. And here is my implementation of A* state based search : https://github.com/AmanHogan/AI_StateSpaceSearches/blob/main/StateSpaceSearches/a_star.py. 
+- `planning.path_planner.py` module that plans the robots path using a* search. Below is a sample of what the module returns when running on desktop: ![Image of path planner](planned_path.png) As you can see, each block is .305 x .305 and the `X` markers are nodes found that were possible paths and the red line is the path traversed. Here is a reference for the implementation of the grid based cell decomp with matplotlib : https://github.com/sponsors/AtsushiSakai. And here is my implementation of A* state based search : https://github.com/AmanHogan/AI_StateSpaceSearches/blob/main/StateSpaceSearches/a_star.py. 
 - `globals.globals.py` module which contains the initial paramters of the robot. This is where the number of obstacles, position of onstacles, radius of the robot, and various other constants are initialized. 
 - `rmath.kinematics.py` module that performs more complex matrix operations related to rmath.kinematics and converts transforms -> commands and transforms -> matricies
 - `rmath.micro_numpy.py` module acts as a replacement for numpy for micropython. Performs basic trig and matrix operations
