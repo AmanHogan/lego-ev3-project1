@@ -1,9 +1,8 @@
 # Lego traversal.robotics Project #1
-## Summary/Objective
+## Summary/Objective [2238-CSE-4360-001-AUTONOMOUS ROBOT DSGN/PROG]
 The objective of this assignment is to navigate a mobile robot through an obstacle course t
 location. The start position of the robot as well as the locations of all obstacles and of the
-given before the robot is started.
-The workspace for the robot is a rectangular area, 3.66 m x 3.05 m in size (this corresponds to
+given before the robot is started. The workspace for the robot is a rectangular area, 3.66 m x 3.05 m in size (this corresponds to
 12 x 10 floor tiles in the lab). Obstacles are black cardboard squares 0.305 m x 0.305 m in
 size of 1 floor tile) which will be placed in the workspace. The goal is a black circle with a r
 0.305 m. To simplify experiments, the center of the goal area, of the obstacles, and of the s
